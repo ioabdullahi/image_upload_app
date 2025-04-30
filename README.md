@@ -23,12 +23,12 @@ A Flutter application that allows users to upload images from their device galle
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/yourusername/image-upload-app.git
+   git clone https://github.com/ioabdullahi/image_upload_app.git
    ```
 
 2. Navigate to the project directory
    ```bash
-   cd image-upload-app
+   cd image_upload_app
    ```
 
 3. Install dependencies
@@ -45,9 +45,9 @@ A Flutter application that allows users to upload images from their device galle
 
 | Package | Version | Purpose |
 |---------|---------|---------|
-| flutter_riverpod | ^2.4.9 | State management |
-| image_picker | ^1.0.4 | Image selection from gallery/camera |
-| permission_handler | ^10.4.0 | Permission management |
+| flutter_riverpod | ^2.6.1 | State management |
+| image_picker | ^1.1.2 | Image selection from gallery/camera |
+| permission_handler | ^12.0.0+1 | Permission management |
 
 ## Folder Structure
 
@@ -69,6 +69,7 @@ lib/
 ├── core/
 │   ├── constants/
 │   │   └── app_constants.dart
+        └── app_colors.dart
 │   └── utils/
 │       ├── image_picker_utils.dart
 │       └── permission_utils.dart
