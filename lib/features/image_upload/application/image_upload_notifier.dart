@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_upload_app/core/utils/image_picker_utils.dart';
@@ -36,6 +37,7 @@ class ImageUploadNotifier extends StateNotifier<ImageUploadState> {
     state = state.copyWith(isLoading: true, errorMessage: null);
     
     try {
+      // Request permissions
       final hasPermission = source == ImageSource.camera
           ? await PermissionUtils.requestCameraPermission()
           : await PermissionUtils.requestPhotosPermission();
@@ -43,31 +45,42 @@ class ImageUploadNotifier extends StateNotifier<ImageUploadState> {
       if (!hasPermission) {
         state = state.copyWith(
           isLoading: false,
-          errorMessage: 'Permission denied',
+          errorMessage: 'Please grant permission in app settings',
         );
         return;
       }
 
-      final XFile? pickedFile = source == ImageSource.camera
-          ? await ImagePickerUtils.captureFromCamera()
-          : await ImagePickerUtils.pickFromGallery();
+      final XFile? pickedFile = await ImagePicker().pickImage(
+        source: source,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
 
+      // User cancelled the picker
       if (pickedFile == null) {
+        state = state.copyWith(isLoading: false);
+        return;
+      }
+
+      // Verify the file exists
+      final file = File(pickedFile.path);
+      if (!await file.exists()) {
         state = state.copyWith(
           isLoading: false,
-          errorMessage: 'No image selected',
+          errorMessage: 'Selected image cannot be accessed',
         );
         return;
       }
 
       state = state.copyWith(
-        imageFile: File(pickedFile.path),
+        imageFile: file,
         isLoading: false,
       );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: 'Failed to upload image: ${e.toString()}',
+        errorMessage: 'Failed to select image. Please try again.',
       );
     }
   }
